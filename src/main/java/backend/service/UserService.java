@@ -1,5 +1,6 @@
 package backend.service;
 
+import backend.dto.LoginResponse;
 import backend.entity.User;
 import backend.repository.UserRepository;
 import backend.security.JwtService;
@@ -45,7 +46,7 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public String login(String email, String password) {
+    public LoginResponse login(String email, String password) {
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
@@ -55,6 +56,12 @@ public class UserService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        return jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new LoginResponse(
+                token,
+                user.getId(),
+                user.getName()
+        );
     }
 }

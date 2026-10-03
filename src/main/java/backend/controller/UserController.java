@@ -49,13 +49,11 @@ public class UserController {
     public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request) {
 
-        String token = userService.login(
+        LoginResponse response = userService.login(
                 request.getEmail(),
                 request.getPassword()
         );
 
-        return ResponseEntity.ok(
-                new LoginResponse(token)
-        );
+        return ResponseEntity.ok(response);
     }
 }
