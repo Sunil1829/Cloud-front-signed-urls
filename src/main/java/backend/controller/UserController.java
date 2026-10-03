@@ -1,9 +1,13 @@
 package backend.controller;
 
+import backend.dto.LoginRequest;
+import backend.dto.LoginResponse;
 import backend.dto.UserRequest;
 import backend.entity.User;
 import backend.service.UserService;
+
 import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,14 +31,31 @@ public class UserController {
                 request.getPassword()
         );
 
-        return ResponseEntity.ok(userService.createUser(user));
+        return ResponseEntity.ok(
+                userService.createUser(user)
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    public ResponseEntity<User> getUser(
+            @PathVariable Long id) {
 
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @Valid @RequestBody LoginRequest request) {
+
+        String token = userService.login(
+                request.getEmail(),
+                request.getPassword()
+        );
+
+        return ResponseEntity.ok(
+                new LoginResponse(token)
+        );
     }
 }
